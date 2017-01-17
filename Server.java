@@ -150,6 +150,11 @@ public class Server {
 
         Message message = (Message) input.readObject();
         username = Encryption.decrypt(message.getText());
+        
+        if (usernameTaken(username)) {
+          display("Error: Username already taken.");
+          close();
+        }
 
         display(username + " just connected.");
       }
@@ -161,6 +166,16 @@ public class Server {
       catch (ClassNotFoundException e) {}
 
       date = new Date().toString() + "\n";
+    }
+    
+    private boolean usernameTaken(String username) {  
+      for (int i = 0; i < clients.size(); i++) {
+          ClientThread thread = clients.get(i);
+          display(thread.username);
+          if (thread.username.equals(username))
+        return true;
+      }
+      return false;
     }
 
     // "Главната" функция
